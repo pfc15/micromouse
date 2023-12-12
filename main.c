@@ -54,6 +54,13 @@ void pra_frente(no* pai, int x, int y){
     }
 }
 
+void dfs(no* atual, int x_ant, int y_ant){
+
+    int retorno = fazer("w");
+
+
+    
+}
 
 int main(){
 
