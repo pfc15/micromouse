@@ -52,9 +52,6 @@ void pra_frente(no* pai, int x, int y){
         printf("voltando:\n");
         printf("(%d, %d)", filho->x, filho->y);
     }
-    
-        
-    
 }
 
 
