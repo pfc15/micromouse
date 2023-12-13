@@ -138,14 +138,20 @@ int pra_frente(no* pai, int x, int y, no **visit, int direcao){
             int cont =0;
             while (1){
                 direcao = (direcao+1)%4;
-                cont++;
+                cont =0;
                 printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
                 printf("0:x+1  1:y+1  2:x-1  3:y-1\n(%d, %d) direção: %d\n", x, y, direcao);
-                for (int i=0;i<4;i++) printf("v[%d]: %d\n", i, filho->visitado[i]);
+                for (int i=0;i<4;i++){
+                    printf("v[%d]: %d\n", i, filho->visitado[i]);
+                    if (filho->visitado[i]!=0){
+                        cont++;
+                    }
+                }
+                if (cont>3) break;
                 fazer('l');
-                if (filho->visitado[direcao]==0 || cont>4) break; // se cont >4 vai ter q implementar voltar para ultimo lugar
+                if (filho->visitado[direcao]==0) break; // se cont >4 vai ter q implementar voltar para ultimo lugar
             }
-            if (cont>4) break;
+            if (cont>3) break;
         } else if (retorno==2){ // se achou o final
             no* atual = visit[htfind(visit, 100000, filho)];
             printf("(%d, %d)", filho->x, filho->y);
@@ -161,7 +167,6 @@ int pra_frente(no* pai, int x, int y, no **visit, int direcao){
     
     
 }
-    
     
 
 
