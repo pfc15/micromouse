@@ -66,7 +66,7 @@ no **HTinit(long int M){
 }
 
 
-
+// construtor do nó
 no* No(int x, int y, no* pai){
     no* novo = malloc(sizeof(no));
     novo->x = x;
@@ -89,7 +89,7 @@ no* No(int x, int y, no* pai){
     return novo;
 }
 
-
+// mandar ação para o programa
 int fazer(const char acao){
     printf("%c\n", acao);
     fflush(stdout);
@@ -98,74 +98,86 @@ int fazer(const char acao){
     return retorno;
 }
 
-int pra_frente(no* pai, int x, int y, no **visit, int direcao){
+// função para verificar se já exploramos tudo do nó
+int esgotado(no* analisa){
+    int cont =0;
+    for (int i=0;i<4;i++){
+        printf("v[%d]: %d\n", i, analisa->visitado[i]);
+        if (analisa->visitado[i]!=0){
+            cont++;
+        }
+    }
+    if (cont == 4) return 0;
+    else return -1;
+}
 
-    int visitado = htfind_coordenada(visit, 100000, x, y);
-    no* filho;
-    if (visitado>=0){
-        printf("opa, já vim aqui!\n");
-        filho = visit[visitado];
-        filho->visitado[mod(direcao-2, 4)] = 1;
-        int c =0;
-        for (int i=0;i<4;i++) if (filho->visitado[i]==0)c++;
-        if (c==0) return 3;
-        printf("(%d, %d)\n", filho->x, filho->y);
-        fflush(stdout);
-    }
-        
-    else{
-        filho = No(x, y, pai);
-        HTinsert(visit, 100000, filho);
-    }
+// função para retornar ao pai
+
+
+int pra_frente(no* atual, no **visit, int direcao){
     
-
-
+    no *prox = NULL;
+    int x, y;
     int retorno = -1;
-    while (retorno!= 1){
+    while (1){
+        prox = NULL;
         printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
-        printf("estou em (%d, %d) e vou andar para frente\ndirecao: %d\n", x, y, direcao);
-        int retorno = fazer('w');
-        if (retorno == 1){ // se deu certo
-            if (direcao%2==0){
-                retorno = pra_frente(filho, x+((direcao-1)*-1), y, visit, direcao);
+        printf("estou em (%d, %d) e vou andar para frente\ndirecao: %d\n", atual->x, atual->y, direcao);
+
+        
+        if (direcao%2==0){
+            x = atual->x+(((direcao-1)%2)*-1);
+            y = atual->y;
+        } else{
+            x = atual->x;
+            y = atual->y+(((direcao-2)%2)*-1);
+        }
+
+        // verificando se já visitamos tudo
+        int index = htfind_coordenada(visit,100000, x, y);
+        if (index>=0){
+            prox = visit[index];
+            if (esgotado(prox)==-1){
+                retorno = fazer('w');
             } else{
-                retorno = pra_frente(filho, x, y+((direcao-2)*-1), visit, direcao);
+                atual->visitado[direcao] = 1;
+                prox = NULL;
+                retorno=0;
+            } 
+        } else{
+            retorno = fazer('w');
+        } 
+
+
+        if (retorno == 1){ // se deu certo
+            if (prox==NULL){
+                prox = No(x, y, atual);
+                HTinsert(visit,100000, prox);
             }
+            retorno = pra_frente(prox , visit, direcao);
         }
         
         if (retorno==0){ // se bateu na parede
-            filho->visitado[direcao] = -1;
-            int cont =0;
-            while (1){
+            atual->visitado[direcao] = -1;
+            int parar = esgotado(atual);
+            while (parar==-1){
                 direcao = (direcao+1)%4;
-                cont =0;
                 printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
-                printf("0:x+1  1:y+1  2:x-1  3:y-1\n(%d, %d) direção: %d\n", x, y, direcao);
-                for (int i=0;i<4;i++){
-                    printf("v[%d]: %d\n", i, filho->visitado[i]);
-                    if (filho->visitado[i]!=0){
-                        cont++;
-                    }
-                }
-                if (cont>3) break;
+                printf("0:x+1  1:y+1  2:x-1  3:y-1\n(%d, %d) direção: %d\n", atual->x, atual->y, direcao);
                 fazer('l');
-                if (filho->visitado[direcao]==0) break; // se cont >4 vai ter q implementar voltar para ultimo lugar
+                if (atual->visitado[direcao]==0) break; // se cont >4 vai ter q implementar voltar para ultimo lugar
             }
-            if (cont>3) break;
+            if (parar==0) break;
         } else if (retorno==2){ // se achou o final
-            no* atual = visit[htfind(visit, 100000, filho)];
-            printf("(%d, %d)", filho->x, filho->y);
+            printf("(%d, %d)", atual->x, atual->y);
             return 2;
         } else if (retorno ==3){
             int c =0;
-            for (int i=0;i<4;i++) if (filho->visitado[i]==0)c++;
-            if (c==0) return 3;
+            if (esgotado(atual)== 0) return 3;
             break;
         }
     }
     return 0;
-    
-    
 }
     
 
@@ -174,7 +186,8 @@ int main(){
     no** visitados = HTinit(100000);
     int retorno;
     char acao;
-    pra_frente(NULL, 0, 0, visitados, 0);
+    no* cabeca = No(0,0,NULL);
+    pra_frente(cabeca, visitados, 0);
     printf("\n");
 
 
