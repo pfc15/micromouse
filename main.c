@@ -112,7 +112,34 @@ int esgotado(no* analisa){
 }
 
 // função para retornar ao pai
-
+int retornar(no* pai, no* filho, int direcao){
+    int direcao_desejada;
+    if (pai!=NULL){
+        if (pai->x==filho->x){
+            direcao_desejada = mod((pai->y-filho->y)+4, 4);
+            while(direcao!=direcao_desejada){
+                printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+                printf("0:x+1  1:y+1  2:x-1  3:y-1\nfilho: (%d, %d); pai: (%d, %d) direção: %d\n", filho->x, filho->y, pai->x, pai->y, direcao);
+                direcao = (direcao+1)%4;
+                fazer('l');
+            }
+        } else{
+            direcao_desejada = mod((pai->x-filho->x)+3, 4);
+            while(direcao!=direcao_desejada){
+                printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+                printf("0:x+1  1:y+1  2:x-1  3:y-1\nfilho: (%d, %d); pai: (%d, %d) direção: %d\n", filho->x, filho->y, pai->x, pai->y, direcao);
+                
+                direcao = (direcao+1)%4;
+                fazer('l');
+            }
+        }
+        printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+        printf("estou em (%d, %d) e vou andar para frente\ndirecao: %d\n", filho->x, filho->y, direcao);
+        fazer('w');
+    }
+    
+    return direcao;
+}
 
 int pra_frente(no* atual, no **visit, int direcao){
     
@@ -146,6 +173,10 @@ int pra_frente(no* atual, no **visit, int direcao){
             } 
         } else{
             retorno = fazer('w');
+            if (retorno==2){
+                fazer('l');
+                fazer('l');
+            }
         } 
 
 
@@ -169,7 +200,9 @@ int pra_frente(no* atual, no **visit, int direcao){
             }
             if (parar==0) break;
         } else if (retorno==2){ // se achou o final
-            printf("(%d, %d)", atual->x, atual->y);
+            direcao = mod(direcao-2, 4);
+            retornar(atual->pai, atual, direcao);
+            printf("(%d, %d)\n", atual->x, atual->y);
             return 2;
         } else if (retorno ==3){
             int c =0;
