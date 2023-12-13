@@ -141,7 +141,7 @@ int retornar(no* pai, no* filho, int direcao){
     return direcao;
 }
 
-int pra_frente(no* atual, no **visit, int direcao){
+int pra_frente(no* ant, no* atual, no **visit, int direcao){
     
     no *prox = NULL;
     int x, y;
@@ -174,18 +174,28 @@ int pra_frente(no* atual, no **visit, int direcao){
         } else{
             retorno = fazer('w');
             if (retorno==2){
-                fazer('l');
-                fazer('l');
+                printf("------------------------------------------------------------------\n");
+                printf("CHEGAMOS! AGR VAMOS VOLTAR!!\n");
+                fflush(stdout);
+                if (prox==NULL){
+                    prox = No(x, y, atual);
+                    HTinsert(visit,100000, prox);
+                }
+                retornar(atual, prox, direcao);
             }
         } 
 
+        
 
         if (retorno == 1){ // se deu certo
             if (prox==NULL){
                 prox = No(x, y, atual);
                 HTinsert(visit,100000, prox);
             }
-            retorno = pra_frente(prox , visit, direcao);
+            retorno = pra_frente(atual, prox , visit, direcao);
+            if (retorno == 3 || retorno == 0){
+                direcao = mod(direcao-2, 4);
+            }
         }
         
         if (retorno==0){ // se bateu na parede
@@ -205,11 +215,15 @@ int pra_frente(no* atual, no **visit, int direcao){
             printf("(%d, %d)\n", atual->x, atual->y);
             return 2;
         } else if (retorno ==3){
-            int c =0;
-            if (esgotado(atual)== 0) return 3;
+            direcao = mod(direcao-2, 4);
+            retornar(ant, atual, direcao);
+            if (esgotado(atual)== 0){
+                return 3;
+            } 
             break;
         }
     }
+    retornar(ant, atual, direcao);
     return 0;
 }
     
@@ -220,7 +234,8 @@ int main(){
     int retorno;
     char acao;
     no* cabeca = No(0,0,NULL);
-    pra_frente(cabeca, visitados, 0);
+    HTinsert(visitados,100000,cabeca);
+    pra_frente(NULL, cabeca, visitados, 0);
     printf("\n");
 
 
