@@ -15,6 +15,7 @@ struct no{
     int visitado[4];
 };
 
+
 int mod(int a, int b)
 {
     int r = a % b;
@@ -136,13 +137,12 @@ int retornar(no* pai, no* filho, int direcao){
         printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
         printf("estou em (%d, %d) e vou andar para frente\ndirecao: %d\n", filho->x, filho->y, direcao);
         fazer('w');
-    }
+    } 
     
     return direcao;
 }
 
 int pra_frente(no* ant, no* atual, no **visit, int direcao){
-    
     no *prox = NULL;
     int x, y;
     int retorno = -1;
@@ -236,6 +236,9 @@ int main(){
     no* cabeca = No(0,0,NULL);
     HTinsert(visitados,100000,cabeca);
     pra_frente(NULL, cabeca, visitados, 0);
+    //printf("----------------------------------\n");
+    //printf("CAMINHO COMPLETO\n");
+    //printf("----------------------------------\n");
     printf("\n");
 
 
