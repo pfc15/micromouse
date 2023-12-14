@@ -21,6 +21,18 @@ int mod(int a, int b)
     int r = a % b;
     return r < 0 ? r + b : r;
 }
+
+typedef struct no_volta no_volta;
+
+struct no_volta{
+    int x;
+    int y;
+    no_volta* pai;
+    char comando[5];
+};
+no_volta* volta = NULL;
+no_volta* novo;
+
 # define Hash(x,y, m) (mod((((x*x)+(3*x)+(2*x*y)+y+(y*y))/2),m))
 # define COLint 10
 
@@ -113,8 +125,8 @@ int esgotado(no* analisa){
 }
 
 // função para retornar ao pai
-int retornar(no* pai, no* filho, int direcao){
-    int direcao_desejada;
+int retornar(no* pai, no* filho, int direcao, const int gravar){
+    int direcao_desejada; int cont = 0;
     if (pai!=NULL){
         if (pai->x==filho->x){
             direcao_desejada = mod((pai->y-filho->y)+4, 4);
@@ -123,6 +135,10 @@ int retornar(no* pai, no* filho, int direcao){
                 printf("0:x+1  1:y+1  2:x-1  3:y-1\nfilho: (%d, %d); pai: (%d, %d) direção: %d\n", filho->x, filho->y, pai->x, pai->y, direcao);
                 direcao = (direcao+1)%4;
                 fazer('l');
+                if (gravar){
+                    novo->comando[cont] = 'r';
+                    cont++;
+                }
             }
         } else{
             direcao_desejada = mod((pai->x-filho->x)+3, 4);
@@ -132,8 +148,17 @@ int retornar(no* pai, no* filho, int direcao){
                 
                 direcao = (direcao+1)%4;
                 fazer('l');
+                if (gravar){
+                    novo->comando[cont] = 'r';
+                    cont++;
+                }
             }
         }
+        if (gravar){
+            novo->comando[cont] = 'w';
+            novo->comando[cont+1] = '\0';
+        } 
+            
         printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
         printf("estou em (%d, %d) e vou andar para frente\ndirecao: %d\n", filho->x, filho->y, direcao);
         fazer('w');
@@ -141,6 +166,8 @@ int retornar(no* pai, no* filho, int direcao){
     
     return direcao;
 }
+
+
 
 int pra_frente(no* ant, no* atual, no **visit, int direcao){
     no *prox = NULL;
@@ -181,7 +208,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
                     prox = No(x, y, atual);
                     HTinsert(visit,100000, prox);
                 }
-                retornar(atual, prox, direcao);
+                retornar(atual, prox, direcao, 0);
             }
         } 
 
@@ -211,34 +238,101 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             if (parar==0) break;
         } else if (retorno==2){ // se achou o final
             direcao = mod(direcao-2, 4);
-            retornar(atual->pai, atual, direcao);
+            novo = malloc(sizeof(no_volta));
+            novo->x = atual->x; novo->y = atual->y;
+            retornar(atual->pai, atual, direcao, 1);
+            novo->pai = volta;
+            volta = novo;
             printf("(%d, %d)\n", atual->x, atual->y);
             return 2;
         } else if (retorno ==3){
             direcao = mod(direcao-2, 4);
-            retornar(ant, atual, direcao);
+            retornar(ant, atual, direcao, 0);
             if (esgotado(atual)== 0){
                 return 3;
             } 
             break;
         }
     }
-    retornar(ant, atual, direcao);
+    retornar(ant, atual, direcao, 0);
     return 0;
 }
-    
+
+
+void caminho_rapido(no_volta* n){
+    no_volta*aux; int cont; int corrida;
+    while (n->pai!=NULL){
+        cont = 0;corrida = 0;
+        if (n->comando[0] == n->comando[1] && n->comando[1] == n->comando[2]){
+            if (n->comando[0] == 'l'){
+                strcpy(n->comando, "rl\0");
+            } else{
+                strcpy(n->comando, "lw\0");
+            }
+        }
+        while(n->comando[cont]!='\0'){
+            switch (n->comando[cont])
+            {
+            case 'l':
+                fazer('l');
+                break;
+            case 'r':
+                fazer('r');
+                break;
+            case 'w':
+                aux = n->pai;
+                corrida = 1;
+                while (aux->comando[0]=='w' && corrida<=4){
+                    corrida++;
+                    aux= aux->pai;
+                }
+                break;
+
+            default:
+                break;
+            }
+            cont++;
+        }
+        switch (corrida){
+            case 1:
+                fazer('w');
+                break;
+            case 2:
+                fazer('j');
+                break;
+            case 3:
+                fazer('R');
+                break;
+            case 4:
+                fazer('s');
+                break;
+        }
+        n = aux;
+    }
+}
 
 
 int main(){
     no** visitados = HTinit(100000);
+    volta = malloc(sizeof(no_volta));
+    volta->x = 0; volta->y = 0;
+    volta->pai = NULL;
+    
     int retorno;
     char acao;
-    no* cabeca = No(0,0,NULL);
+    no* cabeca = No(0, 0,NULL);
+
     HTinsert(visitados,100000,cabeca);
     pra_frente(NULL, cabeca, visitados, 0);
-    //printf("----------------------------------\n");
-    //printf("CAMINHO COMPLETO\n");
-    //printf("----------------------------------\n");
+    strcpy(volta->comando, "llw\0");
+    printf("----------------------------------\n");
+    printf("CAMINHO COMPLETO\n");
+    printf("----------------------------------\n");
+    caminho_rapido(volta);
+    //while(volta != NULL){
+    //    printf("(%d, %d) comando: %s\n ", volta->x, volta->y, volta->comando);
+    //    volta = volta->pai;
+    //}
     printf("\n");
 
 
