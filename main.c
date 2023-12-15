@@ -346,6 +346,8 @@ void caminho_rapido(no_volta* n){
 
 
 int main(){
+    m=3;
+    for (int i=0;i<15;i++) m = m *3;
     no** visitados = HTinit(m);
     volta = malloc(sizeof(no_volta));
     volta->x = 0; volta->y = 0;
