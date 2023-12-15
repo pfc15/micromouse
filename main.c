@@ -57,6 +57,29 @@ int htfind_coordenada(no **ht, long int M, int tf_x, int tf_y){
     return -1;
 }
 
+no **aumenta(no** ht){
+    no **aux = malloc(sizeof(no*)*(m*2));
+    for (int i=0;i<m;i++){
+        aux[i] = NULL;
+    }
+    int c = 0;
+    while(c<m){
+        if (ht[c]!=NULL){
+            int h = Hash(ht[c]->x, ht[c]->y, m*2);
+            int cont =0;
+            while(aux[h]!=NULL&&c<COLint){
+                h =(h+1%(m*2));
+                cont++;
+            }
+            aux[h] = ht[c];
+        }
+        
+        c++;  
+    }
+    m = m*2;
+    return aux;
+}
+
 int HTinsert(no** ht, long int M, no* novo){
     int c=0;
     int h = Hash(novo->x, novo->y, M);
@@ -77,6 +100,7 @@ int HTinsert(no** ht, long int M, no* novo){
     return 1;
 }
 
+
 no **HTinit(long int M){
     no **nht = malloc(sizeof(no*)*M);
     for (int i=0;i<M;i++){
@@ -85,18 +109,7 @@ no **HTinit(long int M){
     return nht;
 }
 
-no**aumenta(no** ht){
-    no** aux = HTinit(m*2);
-    int c = 0;
-    while(c<m){
-        if (ht[c]!=NULL){
-            HTinsert(aux, m*2, ht[c]);
-        }
-        c++;
-    }
-    m = m*2;
-    return aux;
-}
+
 
 
 // construtor do nó
