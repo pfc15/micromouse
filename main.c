@@ -351,6 +351,7 @@ int main(){
     volta->x = 0; volta->y = 0;
     volta->pai = NULL;
     
+    
     int retorno;
     char acao;
     no* cabeca = No(0, 0,NULL);
