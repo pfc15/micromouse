@@ -36,7 +36,7 @@ no_volta* novo;
 # define Hash(x,y, m) (mod((((x*x)+(3*x)+(2*x*y)+y+(y*y))/2),m))
 # define COLint 10
 
-
+long int m;
 
 
 int htfind(no **ht, long int M, no* tf){
@@ -188,7 +188,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
         }
 
         // verificando se já visitamos tudo
-        int index = htfind_coordenada(visit,100000, x, y);
+        int index = htfind_coordenada(visit,m, x, y);
         if (index>=0){
             prox = visit[index];
             if (esgotado(prox)==-1){
@@ -206,7 +206,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
                 fflush(stdout);
                 if (prox==NULL){
                     prox = No(x, y, atual);
-                    HTinsert(visit,100000, prox);
+                    HTinsert(visit,m, prox);
                 }
                 retornar(atual, prox, direcao, 0);
             }
@@ -217,7 +217,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
         if (retorno == 1){ // se deu certo
             if (prox==NULL){
                 prox = No(x, y, atual);
-                HTinsert(visit,100000, prox);
+                HTinsert(visit,m, prox);
             }
             retorno = pra_frente(atual, prox , visit, direcao);
             if (retorno == 3 || retorno == 0){
@@ -313,16 +313,19 @@ void caminho_rapido(no_volta* n){
 
 
 int main(){
-    no** visitados = HTinit(100000);
+    m=3;
+    for (int i=0;i<13;i++) m= m*3;
+    no** visitados = HTinit(m);
     volta = malloc(sizeof(no_volta));
     volta->x = 0; volta->y = 0;
     volta->pai = NULL;
+    
     
     int retorno;
     char acao;
     no* cabeca = No(0, 0,NULL);
 
-    HTinsert(visitados,100000,cabeca);
+    HTinsert(visitados,m,cabeca);
     pra_frente(NULL, cabeca, visitados, 0);
     strcpy(volta->comando, "llw\0");
     printf("----------------------------------\n");
