@@ -3,6 +3,7 @@
 # include <math.h>
 # include <string.h>
 # include <time.h>
+# include <stdbool.h>
 
 
 typedef struct no no;
@@ -24,7 +25,7 @@ int mod(int a, int b)
 
 typedef struct no_volta no_volta;
 
-struct no_volta{
+struct no_volta{ // elemento da lista encadeada
     int x;
     int y;
     no_volta* pai;
@@ -40,7 +41,7 @@ long int m;
 
 
 
-int htfind(no **ht, long int M, no* tf){
+int htfind(no **ht, long int M, no* tf){ // por nó
     int h = Hash(tf->x, tf->y, M);
     for (int c=0, i=h;c<COLint;i =(i+1)%M, c++){
         if (ht[i]==tf) return i;
@@ -48,7 +49,7 @@ int htfind(no **ht, long int M, no* tf){
     return -1;
 }
 
-int htfind_coordenada(no **ht, long int M, int tf_x, int tf_y){
+int htfind_coordenada(no **ht, long int M, int tf_x, int tf_y){ //por coordenada
     long int h = Hash(tf_x, tf_y, M);
     for (long int c=0, i=h;c<COLint;i =(i+1)%M, c++){
         if (ht[i]!=NULL)
@@ -169,7 +170,7 @@ int retornar(no* pai, no* filho, int direcao, const int gravar){
 
 int pra_frente(no* ant, no* atual, no **visit, int direcao){
     no *prox = NULL;
-    int x, y;
+    int x, y; // olhando pra frente
     int retorno = -1;
     while (1){
         prox = NULL;
@@ -185,7 +186,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
 
         // verificando se já visitamos tudo
         int index = htfind_coordenada(visit,m, x, y);
-        if (index>=0){
+        if (index>=0){ // se já foi visitado
             prox = visit[index];
             if (esgotado(prox)==-1){
                 retorno = fazer('w');
@@ -219,6 +220,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             }
         }
         
+        
         if (retorno==0){ // se bateu na parede
             atual->visitado[direcao] = -1;
             int parar = esgotado(atual);
@@ -236,7 +238,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             novo->pai = volta;
             volta = novo;
             return 2;
-        } else if (retorno ==3){
+        } else if (retorno ==3){ // se o nó esta esgotado
             direcao = mod(direcao-2, 4);
             retornar(ant, atual, direcao, 0);
             if (esgotado(atual)== 0){
@@ -245,6 +247,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             break;
         }
     }
+    // 
     retornar(ant, atual, direcao, 0);
     return 0;
 }
@@ -305,15 +308,14 @@ void caminho_rapido(no_volta* n){
 
 int main(){
     m=3;
-    for (int i=0;i<15;i++) m = m *3;
+    for (int i=0;i<10;i++) m = m *3;
     no** visitados = HTinit(m);
     volta = malloc(sizeof(no_volta));
     volta->x = 0; volta->y = 0;
     volta->pai = NULL;
     
     
-    int retorno;
-    char acao;
+    
     no* cabeca = No(0, 0,NULL);
 
     HTinsert(visitados,m,cabeca);
