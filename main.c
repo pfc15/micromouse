@@ -36,7 +36,7 @@ no_volta* novo;
 # define Hash(x,y, m) (mod((((x*x)+(3*x)+(2*x*y)+y+(y*y))/2),m))
 # define COLint 10
 
-long int m = 2;
+long int m;
 
 
 
@@ -57,42 +57,15 @@ int htfind_coordenada(no **ht, long int M, int tf_x, int tf_y){
     return -1;
 }
 
-no **aumenta(no** ht){
-    no **aux = malloc(sizeof(no*)*(m*2));
-    for (int i=0;i<m;i++){
-        aux[i] = NULL;
-    }
-    int c = 0;
-    while(c<m){
-        if (ht[c]!=NULL){
-            int h = Hash(ht[c]->x, ht[c]->y, m*2);
-            int cont =0;
-            while(aux[h]!=NULL&&c<COLint){
-                h =(h+1%(m*2));
-                cont++;
-            }
-            aux[h] = ht[c];
-        }
-        
-        c++;  
-    }
-    m = m*2;
-    return aux;
-}
 
 int HTinsert(no** ht, long int M, no* novo){
     int c=0;
     int h = Hash(novo->x, novo->y, M);
     int f = htfind(ht, M, novo);
     if (f>=0) return -1;
-    while(ht[h]!=NULL){
-        h =(h+1%M);
+    while(ht[h]!=NULL&&c<COLint){
+        h =((h+1)%M);
         c++;
-        if (c>= COLint){
-            ht = aumenta(ht);
-            h = Hash(novo->x, novo->y, m);
-            c =0;
-        }
 
     }
     if (c>COLint) return -1;
