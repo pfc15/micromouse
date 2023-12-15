@@ -220,7 +220,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             }
         }
         
-        
+
         if (retorno==0){ // se bateu na parede
             atual->visitado[direcao] = -1;
             int parar = esgotado(atual);
@@ -257,9 +257,9 @@ void caminho_rapido(no_volta* n){
     no_volta*aux; int cont; int corrida;
     while (n->pai!=NULL){
         cont = 0;corrida = 0;
-        if (n->comando[0] == n->comando[1] && n->comando[1] == n->comando[2]){
+        if (n->comando[0] == n->comando[1] && n->comando[1] == n->comando[2]){ // 3 viradas 
             if (n->comando[0] == 'l'){
-                strcpy(n->comando, "rl\0");
+                strcpy(n->comando, "rw\0");
             } else{
                 strcpy(n->comando, "lw\0");
             }
