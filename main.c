@@ -215,8 +215,8 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
                 prox = No(x, y, atual);
                 HTinsert(visit,m, prox);
             } else{
-                atual->visitado[mod((atual->y+4)-y,4)] = 1;
-                prox->visitado[mod((atual->y+2)-y,4)] = 1;
+                atual->visitado[direcao] = 1;
+                prox->visitado[mod(direcao-2, 4)] = 1;
             }
             retorno = pra_frente(atual, prox , visit, direcao);
             if (retorno == 3 || retorno == 0){
@@ -243,6 +243,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             volta = novo;
             return 2;
         } else if (retorno ==3){ // se o nó esta esgotado
+            printf("entrei aqui");
             direcao = mod(direcao-2, 4);
             if (esgotado(ant) == 0){
                 retornar(atual->pai, atual, direcao, 0);
