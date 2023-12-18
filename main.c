@@ -228,8 +228,8 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
                 prox = No(x, y, atual);
                 HTinsert(visit,m, prox);
             } else{
-                atual->visitado[mod((atual->y+4)-y,4)] = 1;
-                prox->visitado[mod((atual->y+2)-y,4)] = 1;
+                atual->visitado[direcao] = 1;
+                prox->visitado[mod(direcao-2, 4)] = 1;
             }
             retorno = pra_frente(atual, prox , visit, direcao);
             if (retorno == 3 || retorno == 0){
@@ -241,11 +241,11 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             
             int parar = esgotado(atual);
             while (parar==-1){
+                if (atual->visitado[direcao]==0) break; 
                 direcao = (direcao+1)%4;
                 printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
                 printf("0:x+1  1:y+1  2:x-1  3:y-1\n(%d, %d) direção: %d\n", atual->x, atual->y, direcao);
                 fazer('l');
-                if (atual->visitado[direcao]==0) break; // se cont >4 vai ter q implementar voltar para ultimo lugar
             }
             if (parar==0) break;
         } else if (retorno==2){ // se achou o final
