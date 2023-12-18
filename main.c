@@ -207,7 +207,9 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
                 retornar(atual, prox, direcao, 0);
             }
         } 
-
+        if (retorno == 0){
+            atual->visitado[direcao] = -1;
+        }
         
 
         if (retorno == 1){ // se deu certo
@@ -226,7 +228,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
         
 
         if (retorno==0){ // se bateu na parede
-            atual->visitado[direcao] = -1;
+            
             int parar = esgotado(atual);
             while (parar==-1){
                 direcao = (direcao+1)%4;
