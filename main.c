@@ -119,6 +119,7 @@ int fazer(const char acao){
 
 // função para verificar se já exploramos tudo do nó
 int esgotado(no* analisa){
+    if (analisa == NULL) return 0;
     int cont =0;
     for (int i=0;i<4;i++){
         printf("v[%d]: %d\n", i, analisa->visitado[i]);
@@ -224,6 +225,9 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             if (prox==NULL){
                 prox = No(x, y, atual);
                 HTinsert(visit,m, prox);
+            } else{
+                atual->visitado[mod((atual->y+4)-y,4)] = 1;
+                prox->visitado[mod((atual->y+2)-y,4)] = 1;
             }
             retorno = pra_frente(atual, prox , visit, direcao);
             if (retorno == 3 || retorno == 0){
@@ -253,7 +257,12 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             return 2;
         } else if (retorno ==3){
             direcao = mod(direcao-2, 4);
-            retornar(ant, atual, direcao, 0);
+            if (esgotado(ant) == 0){
+                retornar(atual->pai, atual, direcao, 0);
+            } else{
+                retornar(ant, atual, direcao, 0);
+            }
+            
             if (esgotado(atual)== 0){
                 return 3;
             } 
