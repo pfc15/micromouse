@@ -221,7 +221,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
                 prox->visitado[mod(direcao-2, 4)] = 1;
             }
             retorno = pra_frente(atual, prox , visit, direcao);
-            if (retorno == 3 || retorno == 0){
+            if (retorno == 0){
                 direcao = mod(direcao-2, 4);
             }
         }
