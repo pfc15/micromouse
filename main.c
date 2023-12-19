@@ -245,7 +245,6 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
                 retornar(atual->pai, atual, direcao, 1);
                 novo->pai = volta;
                 volta = novo;
-                printf("(%d, %d)\n", atual->x, atual->y);
                 return 2;
             }else{
                 novo->pai = volta;
