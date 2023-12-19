@@ -284,7 +284,7 @@ void caminho_rapido(no_volta* n){
             case 'w':
                 aux = n->pai;
                 corrida = 1;
-                while (aux->comando[0]=='w' && corrida<=4){
+                while (aux->comando[0]=='w' && corrida<4){
                     corrida++;
                     aux= aux->pai;
                 }
