@@ -42,7 +42,7 @@ long int m;
 
 int htfind(no **ht, long int M, no* tf){
     int h = Hash(tf->x, tf->y, M);
-    for (int c=0, i=h;c<COLint;i =(i+1)%M, c++){
+    for (int c=0, i=h;c<COLint;i =(i+Hash(tf->x, tf->y, M))%M, c++){
         if (ht[i]==tf) return i;
     }
     return -1;
@@ -50,7 +50,7 @@ int htfind(no **ht, long int M, no* tf){
 
 int htfind_coordenada(no **ht, long int M, int tf_x, int tf_y){
     long int h = Hash(tf_x, tf_y, M);
-    for (long int c=0, i=h;c<COLint;i =(i+1)%M, c++){
+    for (long int c=0, i=h;c<COLint;i =(i+Hash(tf_x, tf_y, M))%M, c++){
         if (ht[i]!=NULL)
             if (ht[i]->x == tf_x && ht[i]->y==tf_y) return i;
     }
@@ -64,7 +64,7 @@ int HTinsert(no** ht, long int M, no* novo){
     int f = htfind(ht, M, novo);
     if (f>=0) return -1;
     while(ht[h]!=NULL&&c<COLint){
-        h =((h+1)%M);
+        h =((h+Hash(novo->x, novo->y, M))%M);
         c++;
 
     }
@@ -252,17 +252,18 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             direcao = mod(direcao-2, 4);
             novo = malloc(sizeof(no_volta));
             novo->x = atual->x; novo->y = atual->y;
-            if (atual->x!=0&&atual->y!=0){
+            if (atual->x==0&&atual->y==0){
+                novo->pai = volta;
+                volta = novo;
+                return 3;
                 
+            }else{
                 retornar(atual->pai, atual, direcao, 1);
                 novo->pai = volta;
                 volta = novo;
                 printf("(%d, %d)\n", atual->x, atual->y);
                 return 2;
-            }else{
-                novo->pai = volta;
-                volta = novo;
-                return 3;
+                
             } 
             
         } else if (retorno ==3){
@@ -297,7 +298,7 @@ void caminho_rapido(no_volta* n){
             case 'w':
                 aux = n->pai;
                 corrida = 1;
-                while (aux->comando[0]=='w' && corrida<=4){
+                while (aux->comando[0]=='w' && corrida<4){
                     corrida++;
                     aux= aux->pai;
                 }
