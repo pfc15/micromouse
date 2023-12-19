@@ -244,20 +244,7 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             novo->pai = volta;
             volta = novo;
             return 2;
-        } else if (retorno ==3){ // se o nó esta esgotado
-            printf("entrei aqui");
-            direcao = mod(direcao-2, 4);
-            if (esgotado(ant) == 0){
-                retornar(atual->pai, atual, direcao, 0);
-            } else{
-                retornar(ant, atual, direcao, 0);
-            }
-            
-            if (esgotado(atual)== 0){
-                return 3;
-            } 
-            break;
-        }
+        } 
     }
     // 
     retornar(ant, atual, direcao, 0);
