@@ -34,7 +34,7 @@ struct no_volta{ // elemento da lista encadeada
 no_volta* volta = NULL;
 no_volta* novo;
 
-# define Hash(x,y, m) (mod((((x*x)+(3*x)+(2*x*y)+y+(y*y))/2),m))
+# define Hash(x,y, m) (mod((((x*x*18397)+(3*x)+(2*x*y*29303)+y+(y*y*20483))/2),m))
 # define COLint 10
 
 long int m;
