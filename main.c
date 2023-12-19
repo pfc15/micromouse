@@ -231,9 +231,9 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             
             int parar = esgotado(atual);
             while (parar==-1){
+                if (atual->visitado[direcao]==0) break; 
                 direcao = (direcao+1)%4;
                 fazer('l');
-                if (atual->visitado[direcao]==0) break; 
             }
             if (parar==0) break;
         } else if (retorno==2){ // se achou o final
