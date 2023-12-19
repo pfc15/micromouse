@@ -240,11 +240,22 @@ int pra_frente(no* ant, no* atual, no **visit, int direcao){
             direcao = mod(direcao-2, 4);
             novo = malloc(sizeof(no_volta));
             novo->x = atual->x; novo->y = atual->y;
-            retornar(atual->pai, atual, direcao, 1);
-            novo->pai = volta;
-            volta = novo;
-            return 2;
-        } 
+            if (atual->x!=0&&atual->y!=0){
+                
+                retornar(atual->pai, atual, direcao, 1);
+                novo->pai = volta;
+                volta = novo;
+                printf("(%d, %d)\n", atual->x, atual->y);
+                return 2;
+            }else{
+                novo->pai = volta;
+                volta = novo;
+                return 3;
+            } 
+            
+        } else if (retorno ==3){
+            return 3;
+        }
     }
     // 
     retornar(ant, atual, direcao, 0);
